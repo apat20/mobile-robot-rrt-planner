@@ -1,0 +1,46 @@
+<environment>
+
+    <size length="30" breadth="20"/>
+
+    <obstacles>
+        
+        <polygon vertex_count="4">
+            <vertex x="5" y="0"/>
+            <vertex x="7" y="0"/>
+            <vertex x="7" y="8"/>
+            <vertex x="5" y="8"/>
+        </polygon>
+
+        <polygon vertex_count="4">
+            <vertex x="5" y="12"/>
+            <vertex x="7" y="12"/>
+            <vertex x="7" y="20"/>
+            <vertex x="5" y="20"/>
+        </polygon>
+
+        <polygon vertex_count="4">
+            <vertex x="15" y="4"/>
+            <vertex x="15" y="15"/>
+            <vertex x="9" y="15"/>
+            <vertex x="9" y="4"/>
+        </polygon>
+
+        <polygon vertex_count="4">
+            <vertex x="18" y="0"/>
+            <vertex x="20" y="0"/>
+            <vertex x="20" y="8"/>
+            <vertex x="18" y="8"/>
+        </polygon>
+
+        <polygon vertex_count="4">
+            <vertex x="18" y="12"/>
+            <vertex x="20" y="12"/>
+            <vertex x="20" y="20"/>
+            <vertex x="18" y="20"/>
+        </polygon>
+
+        <circle center_x="25" center_y="10" radius="2"/>
+
+    </obstacles>
+
+</environment>
