@@ -25,18 +25,7 @@ if(plan_result)
     plot_config(start_pose, fig_handle, 'MarkerStyle', '.r');
     plot_config(goal_pose, fig_handle, 'MarkerStyle', '.g');
 
-    current_node = length(connected_tree.nodes);
-    motion_plan = current_node;
-    while(current_node > 1)
-        parent_node = find(connected_tree.edges(:,current_node));
-
-        if(length(parent_node) ~= 1)
-            error("Node has more than one parent");
-        end
-
-        motion_plan = [parent_node, motion_plan];
-        current_node = parent_node;
-    end
+    motion_plan = find_path_to_root(connected_tree, length(connected_tree.nodes));
 
     for i = 2:(length(motion_plan))
         if(i < length(motion_plan))
