@@ -8,6 +8,7 @@
 % Output:
 % nodes             - Vector of node ids
 
+% Tree data structure
 % tree.nodes        - Nodes present in the tree
 % tree.edges        - Square matrix of size length(tree.nodes)
 
