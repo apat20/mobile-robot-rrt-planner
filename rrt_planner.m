@@ -1,14 +1,14 @@
 close all;
 clear;
 
-environment = 3;
+environment = 1;
 
 % Set environment occupancy map filename
 switch environment
     case 1
         occupancy_grid_filename = 'environment1.csv';
-        start_pose = [15;27.5];
-        goal_pose = [30;12.5];
+        start_pose = [2.5;2.5];
+        goal_pose = [47.5;27.5];
     case 2
         occupancy_grid_filename = 'environment2.csv';
         start_pose = [15;27.5];
