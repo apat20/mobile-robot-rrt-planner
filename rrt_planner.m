@@ -36,7 +36,7 @@ trees_visualization_prop{2}.edge_color = [0.4940 0.1840 0.5560];
 trees_visualization_prop{2}.edge_width = 2;
 
 % Number of nearnest nodes to connect to sampled pose
-n = 2;
+n = 1;
 
 plot(start_pose(1), start_pose(2), 'oc', 'MarkerSize', 15);
 plot(goal_pose(1), goal_pose(2), 'oc', 'MarkerSize', 15);
@@ -51,6 +51,12 @@ for i = 1:1000
 
     fprintf('\nSample %d\n', i);
 
+%     if(check_if_colliding(occupancy_grid, sampled_poses(:,i), 0.3))
+%         fprintf('\nSample %d colliding with environment\n', i);
+%         delete(sample_plot);
+%         continue;
+%     end
+
     for tree_itr = 1:length(trees)
         nearest_node = find_n_nearest_nodes(trees{tree_itr}, n, sampled_poses(:,i));
 
@@ -58,7 +64,7 @@ for i = 1:1000
             fprintf('Growing from tree %d node %d\n', tree_itr, nearest_node(j));
 
             [trees{tree_itr}, tree_connected_flag(tree_itr)] = extend_tree(    ...
-                trees{tree_itr}, nearest_node(j), occupancy_grid, sampled_poses(:,i), true, 0, ...
+                trees{tree_itr}, nearest_node(j), occupancy_grid, sampled_poses(:,i), false, 2, ...
                 'FigureHandle', fig_handle, ...
                 'NodeMarkerSpec', trees_visualization_prop{tree_itr}.node, ...
                 'EdgeColor', trees_visualization_prop{tree_itr}.edge_color, ...
