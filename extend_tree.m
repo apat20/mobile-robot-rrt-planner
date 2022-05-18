@@ -86,21 +86,17 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
     if(~connect)
         dist = norm(tree.nodes{node}(1:2) - position(1:2));
         
-        if(dist < d_max)
+        if(dist <= d_max)
             connect = 1;
         else
-            dir = (tree.nodes{node}(1:2) - position(1:2)) / dist;
+            dir = (position(1:2) - tree.nodes{node}(1:2)) / dist;
             position = tree.nodes{node}(1:2) + (d_max * dir);
         end
     end
 
     delta = 0.05;
 
-%     fprintf('\nnode\n');
-%     disp(node)
     start_pose = tree.nodes{node};
-%     fprintf('start_pose\n');
-%     disp(start_pose)
 
     for i = delta:delta:1
         interpolated_pos = (1-i) * start_pose(1:2) + i * position(1:2);
