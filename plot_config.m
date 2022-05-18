@@ -20,7 +20,7 @@ function config_plot_handle = plot_config(config, fig_handle, varargin)
     
     arg_count = length(varargin);
 
-    prop_list = {'MarkerStyle', 'MarkerSize', 'DirectionScale', 'DirectionLineWidth'};
+    prop_list = {'MarkerStyle', 'MarkerSize', 'DirectionScale', 'DirectionLineWidth', 'PlotOrientation'};
     prop_list_map = 1:length(prop_list);
     temp_list = prop_list;
 
@@ -28,6 +28,7 @@ function config_plot_handle = plot_config(config, fig_handle, varargin)
     marker_size = 25;
     direction_scale = 2;
     direction_line_width = 2;
+    plot_orientation = true;
 
     if mod(arg_count ,2) ~= 0
         error(message('plot_config():InvalidNumInputs'));
@@ -47,6 +48,8 @@ function config_plot_handle = plot_config(config, fig_handle, varargin)
                         direction_scale = varargin{i+1};
                     case 4
                         direction_line_width = varargin{i+1};
+                    case 5
+                        plot_orientation = varargin{i+1};
                 end
 
                 prop_list_map(j) = [];
@@ -61,5 +64,7 @@ function config_plot_handle = plot_config(config, fig_handle, varargin)
     theta = config(3);
 
     config_plot_handle.pos_handle = plot(x, y, marker_style, 'MarkerSize', marker_size);
-    config_plot_handle.dir_handle = quiver(x, y, cos(theta), sin(theta), direction_scale, '-r', 'LineWidth', direction_line_width);
+    if(plot_orientation)
+        config_plot_handle.dir_handle = quiver(x, y, cos(theta), sin(theta), direction_scale, '-r', 'LineWidth', direction_line_width);
+    end
 end
