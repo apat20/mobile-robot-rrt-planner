@@ -57,6 +57,11 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
         end
     end
 
+    if(visualize_search)
+        new_pos_plot_handle = plot(position(1), position(2), 'ob', 'MarkerSize', 10, 'MarkerFaceColor', 'b');
+        drawnow();
+    end
+
     if(~connect)
         dist = norm(tree.nodes{node}(1:2) - position(1:2));
         
@@ -70,16 +75,17 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
 
     delta = 0.05;
 
-    if(visualize_search)
-        new_pos_plot_handle = plot(position(1), position(2), 'ob', 'MarkerSize', 2, 'MarkerFaceColor', 'b');
-        drawnow();
-    end
+%     fprintf('\nnode\n');
+%     disp(node)
+    start_pose = tree.nodes{node};
+%     fprintf('start_pose\n');
+%     disp(start_pose)
 
     for i = delta:delta:1
-        interpolated_pos = (1-i) * tree.nodes{node}(1:2) + i * position(1:2);
+        interpolated_pos = (1-i) * start_pose(1:2) + i * position(1:2);
         
         if(visualize_search)
-            interpolated_pos_plot_handle = plot(interpolated_pos(1), interpolated_pos(2), 'om', 'MarkerSize', 2, 'MarkerFaceColor', 'm');
+            interpolated_pos_plot_handle = plot(interpolated_pos(1), interpolated_pos(2), 'om', 'MarkerSize', 10, 'MarkerFaceColor', 'm');
             drawnow();
         end
 
@@ -89,11 +95,15 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
                 delete(interpolated_pos_plot_handle);
                 return
             else
+                interpolated_pos = (1-(i-delta)) * start_pose(1:2) + (i-delta) * position(1:2);
                 break
             end
         end
 
-        delete(interpolated_pos_plot_handle);
+        if(visualize_search)
+            pause(0.01);
+            delete(interpolated_pos_plot_handle);
+        end
     end
 
     extended_tree.nodes{end+1} = interpolated_pos;
@@ -108,9 +118,13 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
 
     if(visualize_search)
         delete(interpolated_pos_plot_handle);
+        delete(new_pos_plot_handle);
         prev_pos = extended_tree.nodes{node};
-        new_edge = [prev_pos, position];
-        plot(new_edge(1,:), new_edge(2,:),'-b');
+        extend_pos = extended_tree.nodes{end};
+        new_edge = [prev_pos, extend_pos];
+        plot(extend_pos(1), extend_pos(2), 'ob', 'MarkerSize', 10, 'MarkerFaceColor', 'b');
+        plot(new_edge(1,:), new_edge(2,:),'-k');
         drawnow();
+        pause(0.01);
     end
 end

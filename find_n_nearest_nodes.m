@@ -14,22 +14,27 @@
 
 function nodes = find_n_nearest_nodes(tree, n, position)
     
-    if(n < length(tree.nodes))
+    if(n > length(tree.nodes))
         n = length(tree.nodes);
     end
     
-    nodes = 1;
+    nodes = zeros(1,n);
+    
+    dist_array = zeros(1,length(tree.nodes));
 
-    min_d = norm(tree.nodes{1}(1:2) - position);
-
-    for i = 2:length(tree.nodes)
-        d = norm(tree.nodes{i}(1:2) - position);
-
-        if(d < min_d)
-            min_d = d;
-            nodes = [i, nodes];
-        end
+    for i = 1:length(tree.nodes)
+        dist_array(i) = norm(tree.nodes{i}(1:2) - position);
     end
 
-    nodes = nodes(1:n);
+    dist_array_srt = sort(dist_array);
+
+    i = 1;
+    while i <= n
+        indices = find(dist_array == dist_array_srt(i));
+        
+        for itr = 1:length(indices)
+            nodes(i) = indices(itr);
+            i = i + 1;
+        end
+    end
 end
