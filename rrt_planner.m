@@ -6,7 +6,15 @@ env = parse_environment_description('environment_description.xml');
 
 % visualize_environment(env);
 
+%% Load occupancy grid of environment
+
 occupancy_grid = generate_occupancy_grid(env);
+
+%% Initialize start and goal pose
+start_pose = [3;18];
+goal_pose = [28;12];
+
+%% Visualize environment
 
 figure
 show(occupancy_grid)
@@ -14,15 +22,7 @@ hold on;
 
 fig_handle = gcf;
 
-sampled_poses = generate_samples(1000, 1, env.size.length, env.size.breadth);
-% load("sampled_poses.mat");
-
-start_pose = [3;18];
-goal_pose = [28;12];
-
-trees{1} = initialize_tree(start_pose);
-trees{2} = initialize_tree(goal_pose);
-
+% Visualization properties for trees
 trees_visualization_prop{1}.node.shape = 'ob';
 trees_visualization_prop{1}.node.fill = 'b';
 trees_visualization_prop{1}.edge_line_style = '-';
@@ -35,36 +35,40 @@ trees_visualization_prop{2}.edge_line_style = '-';
 trees_visualization_prop{2}.edge_color = [0.4940 0.1840 0.5560];
 trees_visualization_prop{2}.edge_width = 2;
 
-% Number of nearnest nodes to connect to sampled pose
-n = 1;
-
 plot(start_pose(1), start_pose(2), 'oc', 'MarkerSize', 15);
 plot(goal_pose(1), goal_pose(2), 'oc', 'MarkerSize', 15);
 
+%% Initialize RRT planner parameters
+
+% Initialize two trees one with start_pose as its root node and another
+% with goal_pose as its root node
+trees{1} = initialize_tree(start_pose);
+trees{2} = initialize_tree(goal_pose);
+
+% Number of nearnest nodes to connect to sampled pose
+n = 1;
+
+%% Initialize planner flags
 tree_connected_flag = [false, false];
 
 motion_plan_success = false;
+
+%% Plan motion using RRT
+
+% Sample nodes
+sampled_poses = generate_samples(1000, 1, env.size.length, env.size.breadth);
 
 for i = 1:1000
 
     sample_plot = plot(sampled_poses(1,i),sampled_poses(2,i),'or','MarkerFaceColor','r');
 
-    fprintf('\nSample %d\n', i);
-
-%     if(check_if_colliding(occupancy_grid, sampled_poses(:,i), 0.3))
-%         fprintf('\nSample %d colliding with environment\n', i);
-%         delete(sample_plot);
-%         continue;
-%     end
-
     for tree_itr = 1:length(trees)
         nearest_node = find_n_nearest_nodes(trees{tree_itr}, n, sampled_poses(:,i));
 
         for j = 1:length(nearest_node)
-            fprintf('Growing from tree %d node %d\n', tree_itr, nearest_node(j));
 
             [trees{tree_itr}, tree_connected_flag(tree_itr)] = extend_tree(    ...
-                trees{tree_itr}, nearest_node(j), occupancy_grid, sampled_poses(:,i), false, 2, ...
+                trees{tree_itr}, nearest_node(j), occupancy_grid, sampled_poses(:,i), true, 0, ...
                 'FigureHandle', fig_handle, ...
                 'NodeMarkerSpec', trees_visualization_prop{tree_itr}.node, ...
                 'EdgeColor', trees_visualization_prop{tree_itr}.edge_color, ...
@@ -78,13 +82,15 @@ for i = 1:1000
 
     delete(sample_plot);
 
+    % Stopping criteria : Stop if both trees have connected to a common
+    % node
     if(all(tree_connected_flag))
         motion_plan_success = true;
         break;
     end
 end
 
-%% Connect root of both trees
+%% Connect root node of both trees
 
 if(motion_plan_success)
     motion_plan = {};
@@ -94,7 +100,11 @@ if(motion_plan_success)
     end
 end
 
+% Reverse the motion plan for tree starting from goal pose
 motion_plan{2} = flip(motion_plan{2},2);
+
+% Concatenate the motion plan from tree starting at start pose and the
+% motion plan from the tree starting at goal pose
 connected_motion_plan = [motion_plan{1}, motion_plan{2}(:,2:end)];
 
 %% Visualize Computed Motion Plan
