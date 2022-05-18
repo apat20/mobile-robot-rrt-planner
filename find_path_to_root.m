@@ -11,7 +11,8 @@
 function path = find_path_to_root(tree, node_id)
     current_node = node_id;
 
-    path = current_node;
+    node_path = current_node;
+    path = tree.nodes{current_node};
 
     while(current_node > 1)
         parent_node = find(tree.edges(:,current_node));
@@ -20,7 +21,9 @@ function path = find_path_to_root(tree, node_id)
             error("find_path_to_root() : Node %d has more than one parent", current_node);
         end
 
-        path = [parent_node, path];
+        node_path = [parent_node, node_path];
+        path = [tree.nodes{parent_node}, path];
         current_node = parent_node;
     end
+
 end

@@ -26,13 +26,21 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
 
     robot_radius = 0.30;
 
-    prop_list = {'FigureHandle'};
+    prop_list = {'FigureHandle','NodeMarkerSpec','InterpolatedNodeMarkerSpec','MarkerSize','EdgeLineStyle', 'EdgeColor', 'EdgeWidth'};
     prop_list_map = 1:length(prop_list);
     temp_list = prop_list;
 
     visualize_search = false;
 
     fig_handle = {};
+    node_marker_spec.shape = 'ob';
+    node_marker_spec.fill = 'b';
+    interp_node_marker_spec.shape = 'om';
+    interp_node_marker_spec.fill = 'm';
+    marker_size = 10;
+    edge_line_style = '-';
+    edge_color = 'k';
+    edge_width = 1;
 
     arg_count = length(varargin);
     if mod(arg_count ,2) ~= 0
@@ -48,6 +56,18 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
                     case 1
                         fig_handle = varargin{i+1};
                         visualize_search = true;
+                    case 2
+                        node_marker_spec = varargin{i+1};
+                    case 3
+                        interp_node_marker_spec = varargin{i+1};
+                    case 4
+                        marker_size = varargin{i+1};
+                    case 5
+                        edge_line_style = varargin{i+1};
+                    case 6
+                        edge_color = varargin{i+1};
+                    case 7
+                        edge_width = varargin{i+1};
                 end
 
                 prop_list_map(j) = [];
@@ -58,7 +78,8 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
     end
 
     if(visualize_search)
-        new_pos_plot_handle = plot(position(1), position(2), 'ob', 'MarkerSize', 10, 'MarkerFaceColor', 'b');
+        figure(fig_handle)
+        new_pos_plot_handle = plot(position(1), position(2), node_marker_spec.shape, 'MarkerSize', marker_size);
         drawnow();
     end
 
@@ -85,7 +106,7 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
         interpolated_pos = (1-i) * start_pose(1:2) + i * position(1:2);
         
         if(visualize_search)
-            interpolated_pos_plot_handle = plot(interpolated_pos(1), interpolated_pos(2), 'om', 'MarkerSize', 10, 'MarkerFaceColor', 'm');
+            interpolated_pos_plot_handle = plot(interpolated_pos(1), interpolated_pos(2), interp_node_marker_spec.shape, 'MarkerSize', marker_size, 'MarkerFaceColor', interp_node_marker_spec.fill);
             drawnow();
         end
 
@@ -122,8 +143,8 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
         prev_pos = extended_tree.nodes{node};
         extend_pos = extended_tree.nodes{end};
         new_edge = [prev_pos, extend_pos];
-        plot(extend_pos(1), extend_pos(2), 'ob', 'MarkerSize', 10, 'MarkerFaceColor', 'b');
-        plot(new_edge(1,:), new_edge(2,:),'-k');
+        plot(extend_pos(1), extend_pos(2), node_marker_spec.shape, 'MarkerSize', marker_size, 'MarkerFaceColor', node_marker_spec.fill);
+        plot(new_edge(1,:), new_edge(2,:), edge_line_style, 'Color', edge_color, 'LineWidth', edge_width);
         drawnow();
         pause(0.01);
     end

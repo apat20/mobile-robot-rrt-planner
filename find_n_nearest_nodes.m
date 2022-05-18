@@ -26,7 +26,7 @@ function nodes = find_n_nearest_nodes(tree, n, position)
         dist_array(i) = norm(tree.nodes{i}(1:2) - position);
     end
 
-    dist_array_srt = sort(dist_array);
+    dist_array_srt = unique(dist_array);
 
     i = 1;
     while i <= n
@@ -36,5 +36,13 @@ function nodes = find_n_nearest_nodes(tree, n, position)
             nodes(i) = indices(itr);
             i = i + 1;
         end
+    end
+
+    if(length(nodes) > n)
+        jfk = 1;
+    end
+
+    if(unique(nodes) < n)
+        jfk = 2;
     end
 end
