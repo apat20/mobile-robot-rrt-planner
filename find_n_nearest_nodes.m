@@ -12,13 +12,14 @@
 % tree.nodes        - Nodes present in the tree
 % tree.edges        - Square matrix of size length(tree.nodes)
 
-function nodes = find_n_nearest_nodes(tree, n, position)
+function [nodes, exists_in_tree] = find_n_nearest_nodes(tree, n, position)
     
     if(n > length(tree.nodes))
         n = length(tree.nodes);
     end
     
     nodes = zeros(1,n);
+    exists_in_tree = false;
     
     dist_array = zeros(1,length(tree.nodes));
 
@@ -27,6 +28,14 @@ function nodes = find_n_nearest_nodes(tree, n, position)
     end
 
     dist_array_srt = unique(dist_array);
+
+    if(n > length(dist_array_srt))
+        n = length(dist_array_srt);
+    end
+
+    if(dist_array_srt(1) == 0)
+        exists_in_tree = true;
+    end
 
     i = 1;
     while i <= n
@@ -37,6 +46,8 @@ function nodes = find_n_nearest_nodes(tree, n, position)
             i = i + 1;
         end
     end
+
+    nodes = nodes(find(nodes));
 
     if(length(nodes) > n)
         jfk = 1;
