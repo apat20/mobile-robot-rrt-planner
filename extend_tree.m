@@ -94,7 +94,7 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
         end
     end
 
-    delta = 0.05;
+    delta = 0.025;
 
     start_pose = tree.nodes{node};
 
@@ -118,7 +118,7 @@ function [extended_tree, position_added] = extend_tree(tree, node, occupancy_gri
         end
 
         if(visualize_search)
-            pause(0.01);
+            %pause(0.01);
             delete(interpolated_pos_plot_handle);
         end
     end
