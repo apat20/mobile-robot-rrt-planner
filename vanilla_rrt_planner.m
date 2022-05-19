@@ -4,7 +4,7 @@ clear;
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Set the environment ID (1, 2 or 3) below
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-environment = 1;
+environment = 4;
 
 % Set environment occupancy map filename
 switch environment
@@ -20,6 +20,10 @@ switch environment
         occupancy_grid_filename = 'environment3.csv';
         start_pose = [2.5;2.5];
         goal_pose = [47.5;27.5];
+    case 4
+        occupancy_grid_filename = 'environment4.csv';
+        start_pose = [2.5;2.5];
+        goal_pose = [37.5;27.5];
 end
 
 %% Load occupancy grid of environment

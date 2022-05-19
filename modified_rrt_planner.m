@@ -20,6 +20,10 @@ switch environment
         occupancy_grid_filename = 'environment3.csv';
         start_pose = [2.5;2.5];
         goal_pose = [47.5;27.5];
+    case 4
+        occupancy_grid_filename = 'environment4.csv';
+        start_pose = [2.5;2.5];
+        goal_pose = [37.5;27.5];
 end
 
 %% Load occupancy grid of environment
