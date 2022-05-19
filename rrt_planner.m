@@ -1,14 +1,14 @@
 close all;
 clear;
 
-environment = 1;
+environment = 2;
 
 % Set environment occupancy map filename
 switch environment
     case 1
         occupancy_grid_filename = 'environment1.csv';
         start_pose = [2.5;2.5];
-        goal_pose = [47.5;27.5];
+        goal_pose = [37.5;27.5];
     case 2
         occupancy_grid_filename = 'environment2.csv';
         start_pose = [15;27.5];
@@ -27,10 +27,6 @@ occupancy_grid = binaryOccupancyMap(occupancy_matrix);
 
 env_x_range = occupancy_grid.XWorldLimits(2);
 env_y_range = occupancy_grid.YWorldLimits(2);
-
-%% Initialize start and goal pose
-% start_pose = [3;18];
-% goal_pose = [28;12];
 
 %% Visualize environment
 
@@ -55,6 +51,7 @@ trees_visualization_prop{2}.edge_width = 2;
 
 plot(start_pose(1), start_pose(2), 'oc', 'MarkerSize', 15);
 plot(goal_pose(1), goal_pose(2), 'oc', 'MarkerSize', 15);
+drawnow();
 
 %% Initialize RRT planner parameters
 
@@ -89,7 +86,6 @@ motion_plan_success = false;
 
 % Sample nodes
 sampled_poses = generate_samples(no_rand_samples, no_of_regions, env_x_range, env_y_range);
-% load("sampled_poses_2.mat");
 
 stop_sampling = false;
 
@@ -103,6 +99,7 @@ no_of_poses_per_region = no_rand_samples/no_of_regions;
 can_increment_iterators = false;
 
 while ((~stop_sampling) && (pose_itr <= no_of_poses_per_region))
+    prev_pose_itr = pose_itr;
     while((pose_itr <= no_of_poses_per_region) && (no_of_poses_sampled <= 5))
         sampled_pose = sampled_poses(:, pose_itr, region_itr);
         
@@ -170,6 +167,8 @@ while ((~stop_sampling) && (pose_itr <= no_of_poses_per_region))
     region_itr = region_itr + 1;
     if(region_itr > no_of_regions)
         region_itr = 1;
+    else
+        pose_itr = prev_pose_itr;
     end
     no_of_poses_sampled = 0;
 
@@ -199,13 +198,14 @@ end
 
 %% Visualize Computed Motion Plan
 
+figure
+show(occupancy_grid)
+hold on;
+
 if(motion_plan_success)
-    figure
-    show(occupancy_grid)
-    hold on;
-    
     plot(connected_motion_plan(1,1), connected_motion_plan(2,1), 'or', 'MarkerSize', 15, 'MarkerFaceColor', 'r');
     plot(connected_motion_plan(1,end), connected_motion_plan(2,end), 'og', 'MarkerSize', 15, 'MarkerFaceColor', 'g');
+
     for i = 2:size(connected_motion_plan,2)
         if(i < size(connected_motion_plan,2))
             plot(connected_motion_plan(1,i), connected_motion_plan(2,i), 'ob', 'MarkerFaceColor', 'b', 'MarkerSize', 10);
@@ -213,6 +213,9 @@ if(motion_plan_success)
         current_edge = connected_motion_plan(:,i-1:i);
         plot(current_edge(1,:), current_edge(2,:), '-k', 'LineWidth', 2);
     end
+else
+    plot(start_pose(1), start_pose(2), 'or', 'MarkerSize', 15, 'MarkerFaceColor', 'r');
+    plot(goal_pose(1), goal_pose(2), 'og', 'MarkerSize', 15, 'MarkerFaceColor', 'g');
 end
 
 %% Print Performance Results
@@ -225,7 +228,7 @@ fprintf('Number of regions           : %d\n', no_of_regions);
 fprintf('Number of nearest nodes (n) : %d\n', n);
 
 %% Save figures
-exp = '26';
+exp = '32';
 
 fig_1_name = strcat('exp_',exp,'_tree.fig');
 saveas(figure(1), fig_1_name);
