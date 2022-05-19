@@ -1,7 +1,7 @@
 close all;
 clear;
 
-environment = 2;
+environment = 1;
 
 % Set environment occupancy map filename
 switch environment
@@ -17,6 +17,14 @@ switch environment
         occupancy_grid_filename = 'environment3.csv';
         start_pose = [2.5;2.5];
         goal_pose = [47.5;27.5];
+    case 4
+        occupancy_grid_filename = 'environment4.csv';
+        start_pose = [2.5;2.5];
+        goal_pose = [37.5;27.5];
+    case 5
+        occupancy_grid_filename = 'environment5.csv';
+        start_pose = [10;27.5];
+        goal_pose = [27.5;27.5];
 end
 
 %% Load occupancy grid of environment
@@ -228,10 +236,28 @@ fprintf('Number of regions           : %d\n', no_of_regions);
 fprintf('Number of nearest nodes (n) : %d\n', n);
 
 %% Save figures
-exp = '32';
+exp = '35';
+
+if(no_of_trees == 1)
+    figure(figure(1))
+    fig1_lgd = legend('', '', 'Node', 'Edge', 'Orientation','horizontal', 'Location','northoutside');
+
+    figure(figure(2))
+    fig2_lgd = legend('Start Pose', 'Goal Pose', 'Node', 'Edge', 'Orientation','horizontal', 'Location','northoutside');
+    fig2_lgd.NumColumns = 2;
+elseif(no_of_trees == 2)
+    figure(figure(1))
+    fig1_lgd = legend('', '', 'Tree 1 Node', 'Tree 1 Edge', 'Tree 2 Node', 'Tree 2 Edge', 'Orientation','horizontal', 'Location','northoutside');
+    fig1_lgd.NumColumns = 2;
+    
+    figure(figure(2))
+    fig2_lgd = legend('Start Pose', 'Goal Pose', 'Node', 'Edge', 'Orientation','horizontal', 'Location','northoutside');
+    fig2_lgd.NumColumns = 2;
+end
 
 fig_1_name = strcat('exp_',exp,'_tree.fig');
 saveas(figure(1), fig_1_name);
 
 fig_2_name = strcat('exp_',exp,'_motion_plan.fig');
 saveas(figure(2), fig_2_name);
+
