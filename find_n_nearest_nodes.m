@@ -48,12 +48,4 @@ function [nodes, exists_in_tree] = find_n_nearest_nodes(tree, n, position)
     end
 
     nodes = nodes(find(nodes));
-
-    if(length(nodes) > n)
-        jfk = 1;
-    end
-
-    if(unique(nodes) < n)
-        jfk = 2;
-    end
 end
